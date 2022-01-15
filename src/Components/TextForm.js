@@ -1,32 +1,24 @@
 import React ,{useState} from 'react'
 
 export default function TextForm(props){
+   
     const handleUpClick=()=>{
-        console.log("Uppercase was Clicked");
+        ("Uppercase was Clicked");
         let newText=text.toUpperCase();
         setText(newText);
         props.showAlert("Text was converted to Uppercase","Success:");
     }
     const handleDownClick=()=>{
-      console.log("Lowercase was Clicked");
+      ("Lowercase was Clicked");
       let newText=text.toLowerCase();
       setText(newText);
       props.showAlert("Text was converted to Lowercase","Success:");
   }
     const handleOnChange=(event)=>{
-       // console.log("Uppercase was Clicked");
+      
         setText(event.target.value);
     }
-   /* const showAlert=(event,type)=>
-    {
-          var alertPlaceholder = document.getElementById('liveAlertPlaceholder')
-          var wrapper = document.createElement('div')
-          let message=text;
-          wrapper.innerHTML = '<div class="alert alert-dark alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
-          alertPlaceholder.append(wrapper)
-          console.log("HI");
-    }
-    */
+  
     const clearText=(event)=>
     {
       setText(" ");
@@ -35,10 +27,10 @@ export default function TextForm(props){
     const ChangeFont=(event)=>
     {
       var x=document.getElementById("myBox");
-       console.log(x);
-        x.style.fontFamily="Times New Roman";
-        props.showAlert("Font was changed to Times new Roman","Success:");
-       // setText(newText);
+   
+        x.style.fontFamily="Monospace";
+        props.showAlert("Font was changed to Monospace","Success:");
+       
       
     }
     const HandleExtraSpaces=()=>{
@@ -48,42 +40,51 @@ export default function TextForm(props){
     }
     const CopyText=(event)=>
     {
-      var x=document.getElementById("myBox");
-      x.select();
-      navigator.clipboard.writeText(x.value);
+    
+      navigator.clipboard.writeText(text);
       props.showAlert("Text was Succesfully copied to Clipboard","Success:");
+    }
+    const ChangeFontBack=()=>{
+      var x=document.getElementById("myBox");
+   
+      x.style.fontFamily="Times New Roman";
+      props.showAlert("Font was changed to Times new Roman","Success:");
+    }
+    const LaunchModal=(event)=>{
+      var modal=document.querySelectorAll('div.modal-body')[0];
+      modal.innerHTML=text;
     }
 const [text,setText]=useState('Enter text here');
     return(
       <>
         <div  style={{color: props.mode==='dark'?'white':'black'}}>
-            <h1>{props.heading}</h1>
+            <h1 className="mb-4">{props.heading}</h1>
             <div class="mb-3">
-            <textarea className="form-control" value={text} onChange={handleOnChange} id="myBox" style={{backgroundColor:props.mode==='dark'?'grey':'white',color:props.mode==='dark'?'white':'black'}} rows="8"></textarea>
+            <textarea className="form-control" value={text} onChange={handleOnChange} id="myBox" style={{backgroundColor:props.mode==='dark'?'#403f4c':'white',color:props.mode==='dark'?'white':'#403f4c'}} rows="8"></textarea>
             </div>
-          <button onClick={handleUpClick} className="btn btn-primary mx-2">
+          <button disabled={text.length===0} onClick={handleUpClick} className="btn btn-primary mx-2  my-2">
            Convert to Upper Case
           </button>
-          <button onClick={handleDownClick} className="btn btn-primary mx-2">
+          <button disabled={text.length===0} onClick={handleDownClick} className="btn btn-primary mx-2 my-2">
            Convert to Lower Case
           </button>
-        <button type="button" className="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" disabled={text.length===0} className="btn btn-primary mx-2" data-bs-toggle="modal" onClick={LaunchModal} data-bs-target="#exampleModal">
           Launch demo modal
         </button>
         
-<button type="button" className="btn btn-primary mx-2 my-2" onClick={props.showAlert} id="liveAlertBtn">Show live alert</button>
-<button type="button" className="btn btn-primary mx-2 my-2" onClick={clearText} id="liveAlertBtn">Clear Text</button>
-<button type="button" className="btn btn-primary mx-2 my-2" onClick={ChangeFont} id="liveAlertBtn">Monospace</button>
-<button type="button" className="btn btn-primary mx-2 my-2" onClick={CopyText} id="liveAlertBtn">Copy Text</button>
-<button type="button" className="btn btn-primary mx-2 my-2" onClick={HandleExtraSpaces} id="liveAlertBtn">Handle Extra Spaces</button>
+<button disabled={text.length===0} type="button" className="btn btn-primary mx-2 my-2" onClick={ChangeFontBack} id="liveAlertBtn">Times New Roman</button>
+<button disabled={text.length===0} type="button" className="btn btn-primary mx-2 my-2" onClick={clearText} id="liveAlertBtn">Clear Text</button>
+<button disabled={text.length===0} type="button" className="btn btn-primary mx-2 my-2" onClick={ChangeFont} id="liveAlertBtn">Monospace</button>
+<button disabled={text.length===0} type="button" className="btn btn-primary mx-2 my-2" onClick={CopyText} id="liveAlertBtn">Copy Text</button>
+<button disabled={text.length===0} type="button" className="btn btn-primary mx-2 my-2" onClick={HandleExtraSpaces} id="liveAlertBtn">Handle Extra Spaces</button>
 <div id="liveAlertPlaceholder"></div>
         <div className="container my-3" style={{color:props.mode==='dark'?'white':'black'}}>
           <h1>Your Text Summary</h1>
-          <p>{text.length>0?text.split(' ').length:0} words and {(text.length-text.split(' ').length)+1} characters</p>
+          <p>{text.split(/\s+/).filter((element)=>{return element.length!=0}).length} words and {(text.length-text.split(' ').length)+1} characters</p>
         
-          <p>{0.008 * text.split(" ").length} Minutes read</p>
+          <p>{0.008 *text.split(" ").filter((element)=>{return element.length!=0}).length } Minutes read</p>
           <h2>Preview</h2>
-          <p>{text.length>0?text:"Enter Text in the text-box to preview it here"}</p>
+          <p>{text.length>0?text:"Nothing to Preview"}</p>
         </div>
         
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
